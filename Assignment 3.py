@@ -163,7 +163,7 @@ def create_cost_data(input_data_kaplanmeier,l,k,PM_cost,CM_cost):
     min_costs_data = output_data[output_data["Cost_t"] == output_data["Cost_t"].min()]
 
     # cost savings
-    cost_savings = float(CM_cost) * l * math.gamma(1+1/k) - float(min_costs_data["Cost_t"])
+    cost_savings = float(CM_cost) / meantimebetweenfailure_WB(l, k) - float(min_costs_data["Cost_t"])
     print("costs savings with optimal PM: ", cost_savings)
 
     # Visualize the cost data
