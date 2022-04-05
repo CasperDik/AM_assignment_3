@@ -70,7 +70,7 @@ def visualization(input_data_kaplanmeier, input_data_weibull):
     plt.plot(input_data_weibull["t"], input_data_weibull["R_t"])
     plt.ylabel("$R(t)$")
     plt.xlabel("$time\ t\ (hours)$")
-    plt.title("Kaplan Meier Curve") # todo: change title
+    plt.title("Kaplan-Meier and Weibull Curve")
     plt.show()
 
 # Manual Chapter 4:
@@ -81,6 +81,9 @@ def meantimebetweenfailure_KM(input_data_kaplanmeier):
 
 # Manual Chapter 5:
 def find_lambdakappa(input_data_kaplanmeier):
+    import warnings
+    warnings.filterwarnings("ignore", category=RuntimeWarning)
+
     # Create two ranges of values for potential lambda/kappa combinations (1-35 integer for lambda, 0-3.5 one decimal for kappa)
     l_range = np.linspace(1, 35, 35)
     k_range = np.linspace(0, 3.5, 36)
@@ -164,13 +167,18 @@ def create_cost_data(input_data_kaplanmeier,l,k,PM_cost,CM_cost):
 
     # cost savings
     cost_savings = float(CM_cost) / meantimebetweenfailure_WB(l, k) - float(min_costs_data["Cost_t"])
-    print("costs savings with optimal PM: ", cost_savings)
+    print("Optimal PM time is every: ", float(min_costs_data["t"]), " hours")
+    print("Costs savings with optimal PM: ", cost_savings)
+    print("Optimal PM policy saves: ", cost_savings/(float(CM_cost) / meantimebetweenfailure_WB(l, k))*100, "%")
 
     # Visualize the cost data
-    # todo: add layout and labels etc
     plt.plot(output_data["t"], output_data["Cost_t"])
     plt.vlines(min_costs_data["t"], ymin=0, ymax=min_costs_data["Cost_t"], linestyles="dashed")
     ylim = float(min_costs_data["Cost_t"])*2.5
+    plt.xlabel("$T (hours)$")
+    plt.ylabel("$\eta (H)$")
+    plt.title("Cost Curve and Optimal PM")
+    plt.annotate("$T_{opt}$", (min_costs_data["t"], min_costs_data["Cost_t"]/2))
     plt.ylim(0, ylim)
     plt.show()
 
@@ -253,6 +261,3 @@ def run_analysis():
 
 if __name__=="__main__":
     run_analysis()
-    # todo: edit plots
-    # todo: check costs --> file 3
-    # todo: solve warnings
